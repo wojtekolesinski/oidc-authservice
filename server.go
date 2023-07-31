@@ -468,6 +468,7 @@ func (s *server) enabledAuthenticator(authenticator string) bool {
 func (s *server) logout(w http.ResponseWriter, r *http.Request) {
 
 	logger := common.RequestLogger(r, logModuleInfo)
+	logger.Info("Entered logout")
 
 	// Only header auth allowed for this endpoint
 	sessionID := common.GetBearerToken(r.Header.Get(s.authHeader))
@@ -544,6 +545,8 @@ func (s *server) whitelistMiddleware(whitelist []string, isReady *abool.AtomicBo
 			logger := common.RequestLogger(r, logModuleInfo)
 
 			path := r.URL.Path
+
+			logger.Infof("Check whitelist for for url %s", path)
 			// If called by the `/authservice/verify` router then
 			// first trim the verifyAuthURL prefix and then examine
 			// if the remaining path is whitelisted.
