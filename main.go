@@ -52,14 +52,15 @@ func main() {
 	// Register handlers for routes
 	router := mux.NewRouter()
 	router.HandleFunc(c.RedirectURL.Path, s.callback).Methods(http.MethodGet)
-	router.HandleFunc(path.Join(c.AuthserviceURLPrefix.Path, SessionLogoutPath), s.logout).Methods(http.MethodPost)
+	router.HandleFunc(path.Join(c.AuthserviceURLPrefix.Path, SessionLogoutPath), s.logout).Methods(http.MethodPost).Methods(http.MethodGet)
 
 	router.PathPrefix(c.VerifyAuthURL.Path).Handler(s.whitelistMiddleware(c.SkipAuthURLs, isReady, true)(http.HandlerFunc(s.authenticate_no_login))).Methods(http.MethodGet)
 	router.PathPrefix("/").Handler(s.whitelistMiddleware(c.SkipAuthURLs, isReady, false)(http.HandlerFunc(s.authenticate_or_login)))
 
 	// Start judge server
 	log.Infof("Starting judge server at %v:%v", c.Hostname, c.Port)
-	log.Info("This is my custom message")
+	log.Infof("Logout path: %s", path.Join(c.AuthserviceURLPrefix.Path, SessionLogoutPath))
+	log.Infof("Callback path: %s", c.RedirectURL.Path)
 	stopCh := make(chan struct{})
 	go func(stopCh chan struct{}) {
 		log.Fatal(http.ListenAndServe(fmt.Sprintf("%s:%d", c.Hostname, c.Port), handlers.CORS()(router)))
