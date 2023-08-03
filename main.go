@@ -52,7 +52,7 @@ func main() {
 	// Register handlers for routes
 	router := mux.NewRouter()
 	router.HandleFunc(c.RedirectURL.Path, s.callback).Methods(http.MethodGet)
-	router.HandleFunc(path.Join(c.AuthserviceURLPrefix.Path, SessionLogoutPath), s.logout).Methods(http.MethodPost)
+	router.HandleFunc(path.Join(c.AuthserviceURLPrefix.Path, SessionLogoutPath), s.logout).Methods(http.MethodGet)
 
 	router.PathPrefix(c.VerifyAuthURL.Path).Handler(s.whitelistMiddleware(c.SkipAuthURLs, isReady, true)(http.HandlerFunc(s.authenticate_no_login))).Methods(http.MethodGet)
 	router.PathPrefix("/").Handler(s.whitelistMiddleware(c.SkipAuthURLs, isReady, false)(http.HandlerFunc(s.authenticate_or_login)))
@@ -218,6 +218,8 @@ func main() {
 		},
 		userIdTransformer:       c.UserIDTransformer,
 		sessionMaxAgeSeconds:    c.SessionMaxAge,
+		sessionHttpOnly:         c.SessionHttpOnly,
+		sessionSecure:           c.SessionSecure,
 		strictSessionValidation: c.StrictSessionValidation,
 		cacheEnabled:            c.CacheEnabled,
 		cacheExpirationMinutes:  c.CacheExpirationMinutes,
