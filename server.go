@@ -502,14 +502,6 @@ func (s *server) logout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	logger.Info("Successful logout.")
-	//resp := struct {
-	//	AfterLogoutURL string `json:"afterLogoutURL"`
-	//}{
-	//	AfterLogoutURL: s.afterLogoutRedirectURL,
-	//}
-	// Return 201 because the logout endpoint is still on the envoy-facing server,
-	// meaning that returning a 200 will result in the request being proxied upstream.
-	//common.ReturnJSONMessage(w, http.StatusCreated, resp)
 	http.Redirect(w, r, "/", http.StatusSeeOther)
 }
 
